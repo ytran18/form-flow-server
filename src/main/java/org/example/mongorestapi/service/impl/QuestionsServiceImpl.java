@@ -23,6 +23,13 @@ public class QuestionsServiceImpl implements QuestionsService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    private List<Questions> getQuestionsByCriteria(Criteria criteria) {
+        MatchOperation matchOperation = Aggregation.match(criteria);
+        Aggregation aggregation = Aggregation.newAggregation(matchOperation);
+        AggregationResults<Questions> aggregationResults = mongoTemplate.aggregate(aggregation, "questions", Questions.class);
+        return aggregationResults.getMappedResults();
+    }
+
     @Override
     public Object getQuestionsById(String id) {
         Aggregation aggregation = Aggregation.newAggregation(
@@ -41,11 +48,7 @@ public class QuestionsServiceImpl implements QuestionsService {
     @Override
     public void deleteQuestions(List<QuestionsDto> questions, String id) {
         Criteria criteria = Criteria.where("formId").is(id);
-
-        MatchOperation matchOperation = Aggregation.match(criteria);
-        Aggregation aggregation = Aggregation.newAggregation(matchOperation);
-        AggregationResults<Questions> aggregationResults = mongoTemplate.aggregate(aggregation, "questions", Questions.class);
-        List<Questions> existingQuestions = aggregationResults.getMappedResults();
+        List<Questions> existingQuestions = getQuestionsByCriteria(criteria);
 
         for (Questions existingQuestion : existingQuestions) {
             Optional<QuestionsDto> matchingQuestion = questions.stream()
@@ -59,11 +62,7 @@ public class QuestionsServiceImpl implements QuestionsService {
     @Override
     public void updateQuestions(List<Questions> questions, String id) {
         Criteria criteria = Criteria.where("formId").is(id);
-
-        MatchOperation matchOperation = Aggregation.match(criteria);
-        Aggregation aggregation = Aggregation.newAggregation(matchOperation);
-        AggregationResults<Questions> aggregationResults = mongoTemplate.aggregate(aggregation, "questions", Questions.class);
-        List<Questions> existingQuestions = aggregationResults.getMappedResults();
+        List<Questions> existingQuestions = getQuestionsByCriteria(criteria);
 
         for (Questions existingQuestion : existingQuestions) {
             Optional<Questions> matchingQuestion = questions.stream()
