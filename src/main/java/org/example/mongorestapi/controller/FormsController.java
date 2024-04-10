@@ -78,6 +78,20 @@ public class FormsController {
         );
     };
 
+    // rename
+    @PutMapping("/rename/{id}")
+    public ResponseEntity<ObjectDataResponse> renameForm(@PathVariable String id, @RequestBody String name) {
+        formsService.renameForm(id, name);
+        return ResponseEntity.ok(
+                new ObjectDataResponse(
+                        HttpStatus.OK.value(),
+                        "Rename successfully!",
+                        true,
+                        null
+                )
+        );
+    };
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ObjectDataResponse> handleException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ObjectDataResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), false, null));
