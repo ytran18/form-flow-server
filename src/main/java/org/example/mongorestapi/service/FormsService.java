@@ -1,6 +1,7 @@
 package org.example.mongorestapi.service;
 
 import org.example.mongorestapi.collection.Forms;
+import org.example.mongorestapi.dto.master.FormsDto;
 
 public interface FormsService {
 

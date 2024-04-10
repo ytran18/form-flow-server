@@ -1,10 +1,13 @@
 package org.example.mongorestapi.service.impl;
 
 import org.example.mongorestapi.collection.Forms;
+import org.example.mongorestapi.dto.master.FormsDto;
 import org.example.mongorestapi.repository.FormsRepository;
 import org.example.mongorestapi.service.FormsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -37,7 +40,13 @@ public class FormsServiceImpl implements FormsService {
 
     @Override
     public Object getFormById(String id) {
-        return formsRepository.findById(id);
+        Aggregation aggregation = Aggregation.newAggregation(
+            Aggregation.match(Criteria.where("_id").is(id)),
+            Aggregation.lookup().from("questions").localField("_id").foreignField("formId").as("questions")
+        );
+
+        AggregationResults<FormsDto> results = mongoTemplate.aggregate(aggregation, "forms", FormsDto.class);
+        return results.getMappedResults();
     };
 
     @Override
