@@ -10,5 +10,6 @@ public interface FormsService {
     void updateForm(String id, Forms form);
     void deleteForm(String id);
     void renameForm(String id, String name);
+    void cloneForm(String id);
 
 }

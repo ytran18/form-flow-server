@@ -92,6 +92,20 @@ public class FormsController {
         );
     };
 
+    // clone
+    @PostMapping("/clone/{id}")
+    public ResponseEntity<ObjectDataResponse> cloneForm(@PathVariable String id) {
+        formsService.cloneForm(id);
+        return ResponseEntity.ok(
+                new ObjectDataResponse(
+                        HttpStatus.OK.value(),
+                        "Clone form successfully!",
+                        true,
+                        null
+                )
+        );
+    };
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ObjectDataResponse> handleException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ObjectDataResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), false, null));
