@@ -58,5 +58,5 @@ jobs:
         with:
           app-name: 'form-flow'
           slot-name: 'Production'
-          package: '*.war'
+          package: '*.jar'
           
