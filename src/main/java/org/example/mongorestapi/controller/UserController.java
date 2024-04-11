@@ -2,6 +2,7 @@ package org.example.mongorestapi.controller;
 
 import jakarta.validation.Valid;
 import org.example.mongorestapi.collection.User;
+import org.example.mongorestapi.dto.auth.LoginDto;
 import org.example.mongorestapi.dto.res.ObjectDataResponse;
 import org.example.mongorestapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    // sign up
     @PostMapping
-    public ResponseEntity<ObjectDataResponse> addUser(@Valid @RequestBody User user) {
+    public ResponseEntity<ObjectDataResponse> addUser(@Valid @RequestBody User user) throws Exception {
         userService.addUser(user);
         return ResponseEntity.ok(
                 new ObjectDataResponse(
@@ -25,6 +27,32 @@ public class UserController {
                         "Add user successfully!",
                         true,
                         null
+                )
+        );
+    };
+
+    // check email before login
+    @GetMapping("/email/check")
+    public ResponseEntity<ObjectDataResponse> checkEmail(@RequestParam String email) throws Exception {
+        return ResponseEntity.ok(
+                new ObjectDataResponse(
+                        HttpStatus.OK.value(),
+                        "Successful!",
+                        true,
+                        userService.validEmail(email)
+                )
+        );
+    }
+
+    // login
+    @GetMapping("/login")
+    public ResponseEntity<ObjectDataResponse> login(@RequestBody LoginDto user) throws Exception {
+        return ResponseEntity.ok(
+                new ObjectDataResponse(
+                        HttpStatus.OK.value(),
+                        "Login Successfully!",
+                        true,
+                        userService.login(user)
                 )
         );
     };
