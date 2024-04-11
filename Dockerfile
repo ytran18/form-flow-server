@@ -1,5 +1,4 @@
 FROM openjdk:17-jdk
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+WORKDIR /app
+COPY target/mongo-restAPI-0.0.1-SNAPSHOT.jar /app/
+CMD ["java", "-jar", "your-app.jar"]
