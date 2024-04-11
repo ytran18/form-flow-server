@@ -42,7 +42,7 @@ public class FormsServiceImpl implements FormsService {
     public Object getFormById(String id) {
         Aggregation aggregation = Aggregation.newAggregation(
             Aggregation.match(Criteria.where("_id").is(id)),
-            Aggregation.lookup().from("questions").localField("_id").foreignField("formId").as("questions")
+            Aggregation.lookup("questions", "_id", "formId", "questions")
         );
 
         AggregationResults<FormsDto> results = mongoTemplate.aggregate(aggregation, "forms", FormsDto.class);
